@@ -1,0 +1,17 @@
+%YAML 1.2
+---
+spring:
+    application:
+        name: springboot-servicio-productos
+    cloud:
+        kubernetes:
+            reload:
+                enabled: false
+                mode: polling
+                period: 30000
+            config:
+                name: default-name
+                namespace: default
+                sources:
+                - name: cm1
+                
