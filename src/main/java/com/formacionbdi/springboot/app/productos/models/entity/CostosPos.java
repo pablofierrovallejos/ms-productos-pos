@@ -57,10 +57,10 @@ public class CostosPos implements Serializable {
 	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}
-	public int getMontotoal() {
+	public int getMontotal() {
 		return montototal;
 	}
-	public void setMontotoal(int montotoal) {
+	public void setMontotal(int montotoal) {
 		this.montototal = montotoal;
 	}
 	public String getDescripcion() {
