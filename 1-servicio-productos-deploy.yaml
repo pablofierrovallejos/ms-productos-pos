@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    io.kompose.service: servicio-productos
+  name: servicio-productos
+  namespace: ventas
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      io.kompose.service: servicio-productos
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+      labels:
+        io.kompose.network/springcloud: "true"
+        io.kompose.service: servicio-productos
+    spec:
+      containers:
+      serviceAccount: ventas
+      - image: 96552333aa/servicio-productos:v3
+        imagePullPolicy: IfNotPresent
+        name: servicio-productos
+        ports:
+        - containerPort: 8001
+          protocol: TCP
+        resources: {}
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
