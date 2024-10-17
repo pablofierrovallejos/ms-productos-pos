@@ -12,7 +12,7 @@ import com.formacionbdi.springboot.app.productos.models.entity.CostosPos;
 public interface ICostosServicePos extends JpaRepository<CostosPos, String>{
 
 	
-	@Query(value="{ call sp_consultarCostos() }", nativeQuery = true)
+	@Query(value="{ call sp_consultarCostos(:sfecha) }", nativeQuery = true)
 	public List<CostosPos> consultarCostos(String sfecha);
 	
 	

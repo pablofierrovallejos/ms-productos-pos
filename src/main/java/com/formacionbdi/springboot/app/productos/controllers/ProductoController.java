@@ -100,7 +100,7 @@ public class ProductoController {
 	
 	@GetMapping("/api/productos/consultar-costos/{sfecha}")
 	public ResponseEntity<List<CostosPos>> consultarCostos(@PathVariable String sfecha){
-		System.out.println("/consultar-costos");
+		System.out.println("/consultar-costos" + "/" + sfecha);
 		return ResponseEntity.ok(costosServicePos.consultarCostos(sfecha));
 	}
 
