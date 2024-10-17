@@ -29,7 +29,8 @@ public class CostosPos implements Serializable {
 	private Date fecha;
 	private String item;
 	private int cantidad;
-	private int montotoal;
+	private int montototal;
+	
 	private String descripcion;
 	
 	public long getIdcostos() {
@@ -57,10 +58,10 @@ public class CostosPos implements Serializable {
 		this.cantidad = cantidad;
 	}
 	public int getMontotoal() {
-		return montotoal;
+		return montototal;
 	}
 	public void setMontotoal(int montotoal) {
-		this.montotoal = montotoal;
+		this.montototal = montotoal;
 	}
 	public String getDescripcion() {
 		return descripcion;
