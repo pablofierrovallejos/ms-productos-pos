@@ -106,7 +106,7 @@ public class ProductoController {
 		return ResponseEntity.ok(costosServicePos.consultarCostos(sfecha));
 	}
 
-	@CrossOrigin(methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE })
+
 	@PostMapping("/api/productos/agregar-costos")
 	public ResponseEntity<Object> addCostosPos(@RequestBody CostosPos costos){
 		return ResponseEntity.ok(
