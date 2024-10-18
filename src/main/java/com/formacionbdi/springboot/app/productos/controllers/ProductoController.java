@@ -39,6 +39,7 @@ public class ProductoController {
 	@Autowired
 	private ICostosServicePos costosServicePos;
 	
+	
 	@Autowired
 	private IDetalleVentaServicePos detalleventaServicePos;
 	
@@ -104,6 +105,16 @@ public class ProductoController {
 		return ResponseEntity.ok(costosServicePos.consultarCostos(sfecha));
 	}
 
+	@PostMapping("/api/productos/agregar-costos")
+	public ResponseEntity<Object> addCostosPos(@RequestBody CostosPos costos){
+		return ResponseEntity.ok(
+			 costosServicePos.agregarCostosPos(costos.getFecha(), 
+					 costos.getItem(),
+					 costos.getCantidad(),
+					 costos.getMontototal(),
+					 costos.getDescripcion() ));
+					 							  
+	}
 	
 	
 	@PostMapping("/api/productos/insertar-venta")
