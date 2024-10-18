@@ -18,7 +18,7 @@ public interface ICostosServicePos extends JpaRepository<CostosPos, String>{
 	
 	
 	@Modifying
-	@Query(value="{ call sp_insertarCostos(:idcostos, :fecha, :item, :cantidad, :montototal, :descripcion) }", nativeQuery = true)
+	@Query(value="{ call sp_insertarCostos(:fecha, :item, :cantidad, :montototal, :descripcion) }", nativeQuery = true)
 	@Transactional
 	public Object agregarCostosPos(
 			  Date fecha,
