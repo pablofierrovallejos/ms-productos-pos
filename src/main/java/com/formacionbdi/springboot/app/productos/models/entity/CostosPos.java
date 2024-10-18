@@ -32,43 +32,53 @@ public class CostosPos implements Serializable {
 	private int montototal;
 	
 	private String descripcion;
-	
+
 	public long getIdcostos() {
 		return idcostos;
 	}
+
 	public void setIdcostos(long idcostos) {
 		this.idcostos = idcostos;
 	}
+
 	public Date getFecha() {
 		return fecha;
 	}
+
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
 	}
+
 	public String getItem() {
 		return item;
 	}
+
 	public void setItem(String item) {
 		this.item = item;
 	}
+
 	public int getCantidad() {
 		return cantidad;
 	}
+
 	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}
-	public int getMontotal() {
+
+	public int getMontototal() {
 		return montototal;
 	}
-	public void setMontotal(int montotoal) {
-		this.montototal = montotoal;
+
+	public void setMontototal(int montototal) {
+		this.montototal = montototal;
 	}
+
 	public String getDescripcion() {
 		return descripcion;
 	}
+
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-	
 	
 }
