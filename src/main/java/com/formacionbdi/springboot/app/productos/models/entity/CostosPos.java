@@ -25,7 +25,6 @@ public class CostosPos implements Serializable {
 	private long idcostos;
 
 	@Column(name = "fecha")
-	@Temporal(TemporalType.TIME)
 	private Date fecha;
 	private String item;
 	private int cantidad;
