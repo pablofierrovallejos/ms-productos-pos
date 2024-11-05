@@ -32,8 +32,9 @@ public interface IProductoServicePos extends JpaRepository<ProductoPos, String>{
 	@Transactional
 	public Object actualizarProductoPos(Long idproductos, String nombreproducto, int precio, Date fechacreacion,
 			String estado, String nroposicion, int cantidaddisponible, Object imagen);
-	
-	
+
+
+
 	
 
 	

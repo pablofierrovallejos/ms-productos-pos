@@ -88,6 +88,16 @@ public class ProductoController {
 					 							   null));
 	}
 	
+	
+	
+	@PostMapping("/api/productos/actualizar-costo")
+	public ResponseEntity<Object> updateCostos(@RequestBody int idcosto){
+		return ResponseEntity.ok(
+			 costosServicePos.actualizarCostoPos(idcosto));
+	}	
+	
+	
+	
 	@GetMapping("/api/productos/listar-ventas")
 	public ResponseEntity<List<VentaPos>> listarVentas(){
 		System.out.println("/listar-ventas");

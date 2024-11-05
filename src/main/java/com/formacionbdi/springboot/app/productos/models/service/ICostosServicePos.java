@@ -29,4 +29,11 @@ public interface ICostosServicePos extends JpaRepository<CostosPos, String>{
 			);
 	
 	
+	@Modifying
+	@Query(value="{ call sp_actualizarCosto(:idcosto) }", nativeQuery = true)
+	@Transactional	
+	public Object actualizarCostoPos(int idcosto);
+	
+	
+	
 }
