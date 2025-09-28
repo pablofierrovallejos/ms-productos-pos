@@ -20,21 +20,21 @@ public class EstadVentas implements Serializable {
 
 	private static final long serialVersionUID = 495358581041644038L;
 
-	@Id
-	private String name;
+		@Id
+		@jakarta.persistence.Column(name = "namedia")
+		private String namedia;
 
 	
-	private String value;
+		private String value;
 
 
-	public String getName() {
-		return name;
-	}
+	   public String getNamedia() {
+		   return namedia;
+	   }
 
-
-	public void setName(String name) {
-		this.name = name;
-	}
+	   public void setNamedia(String namedia) {
+		   this.namedia = namedia;
+	   }
 
 
 	public String getValue() {
