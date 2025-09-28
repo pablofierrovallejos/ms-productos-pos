@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.formacionbdi.springboot.app.productos.models.entity.CostosPos;
 import com.formacionbdi.springboot.app.productos.models.entity.DetalleVentaPos;
-import com.formacionbdi.springboot.app.productos.models.entity.EstadVentas;
+import com.formacionbdi.springboot.app.productos.models.dto.EstadVentasDTO;
 import com.formacionbdi.springboot.app.productos.models.entity.ImagenCliente;
 import com.formacionbdi.springboot.app.productos.models.entity.ProductoPos;
 import com.formacionbdi.springboot.app.productos.models.entity.VentaPos;
@@ -165,28 +165,52 @@ public class ProductoController {
 	
 	
 	@GetMapping("/api/productos/cons-estadis-mensual/{sfecha}")
-	public ResponseEntity<List<EstadVentas>> consultarEstadisticaMes(@PathVariable String sfecha){
+	public ResponseEntity<List<EstadVentasDTO>> consultarEstadisticaMes(@PathVariable String sfecha){
 		System.out.println("/cons-estadis-mensual");
-		return ResponseEntity.ok(estadisticaVentaMes.consultarEstadisticaMes(sfecha));
+		List<Object[]> raw = estadisticaVentaMes.consultarEstadisticaMesRaw(sfecha);
+		List<EstadVentasDTO> result = raw.stream()
+			.map(arr -> new EstadVentasDTO(
+				arr[0] != null ? arr[0].toString() : null,
+				arr[1] != null ? arr[1].toString() : null))
+			.toList();
+		return ResponseEntity.ok(result);
 	}
 	
 	@GetMapping("/api/productos/cons-estadis-mensual-por-prod/{sfecha}/{sproducto}")
-	public ResponseEntity<List<EstadVentas>> consultarEstadisticaMesProd(@PathVariable String sfecha, @PathVariable String sproducto){
+	public ResponseEntity<List<EstadVentasDTO>> consultarEstadisticaMesProd(@PathVariable String sfecha, @PathVariable String sproducto){
 		System.out.println("/cons-estadis-mensual");
-		return ResponseEntity.ok(estadisticaVentaMes.consultarEstadisticaMesProd(sfecha, sproducto));
+		List<Object[]> raw = estadisticaVentaMes.consultarEstadisticaMesProdRaw(sfecha, sproducto);
+		List<EstadVentasDTO> result = raw.stream()
+			.map(arr -> new EstadVentasDTO(
+				arr[0] != null ? arr[0].toString() : null,
+				arr[1] != null ? arr[1].toString() : null))
+			.toList();
+		return ResponseEntity.ok(result);
 	}
 	
 	
 	@GetMapping("/api/productos/cons-estadis-mensual-masvendido-cant/{sfecha}")
-	public ResponseEntity<List<EstadVentas>> consultarEstadisticaMesMasVendidoCant(@PathVariable String sfecha){
+	public ResponseEntity<List<EstadVentasDTO>> consultarEstadisticaMesMasVendidoCant(@PathVariable String sfecha){
 		System.out.println("/cons-estadis-mensual");
-		return ResponseEntity.ok(estadisticaVentaMes.consultarEstadisticaMesMasVendidoCant(sfecha));
+		List<Object[]> raw = estadisticaVentaMes.consultarEstadisticaMesMasVendidosCantidadRaw(sfecha);
+		List<EstadVentasDTO> result = raw.stream()
+			.map(arr -> new EstadVentasDTO(
+				arr[0] != null ? arr[0].toString() : null,
+				arr[1] != null ? arr[1].toString() : null))
+			.toList();
+		return ResponseEntity.ok(result);
 	}
 	
 	@GetMapping("/api/productos/cons-estadis-mensual-masvendido-monto/{sfecha}")
-	public ResponseEntity<List<EstadVentas>> consultarEstadisticaMesMasVendidoMonto(@PathVariable String sfecha){
+	public ResponseEntity<List<EstadVentasDTO>> consultarEstadisticaMesMasVendidoMonto(@PathVariable String sfecha){
 		System.out.println("/cons-estadis-mensual");
-		return ResponseEntity.ok(estadisticaVentaMes.consultarEstadisticaMesMasVendidoMonto(sfecha));
+		List<Object[]> raw = estadisticaVentaMes.consultarEstadisticaMesMasVendidosMontoRaw(sfecha);
+		List<EstadVentasDTO> result = raw.stream()
+			.map(arr -> new EstadVentasDTO(
+				arr[0] != null ? arr[0].toString() : null,
+				arr[1] != null ? arr[1].toString() : null))
+			.toList();
+		return ResponseEntity.ok(result);
 	}
 	
 	
