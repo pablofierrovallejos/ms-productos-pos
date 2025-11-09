@@ -44,6 +44,7 @@ public class VentaPos implements Serializable {
 	private String estadotransbank;
 	private String trazastattransbk;
 	private String longmsgtransbank;
+	private String estadoreg;
 	
 	public VentaPos(){
 	}
@@ -172,7 +173,13 @@ public class VentaPos implements Serializable {
 		this.longmsgtransbank = longmsgtransbank;
 	}
 
+	public String getEstadoreg() {
+		return estadoreg;
+	}
 
+	public void setEstadoreg(String estadoreg) {
+		this.estadoreg = estadoreg;
+	}
 	
 	
 	

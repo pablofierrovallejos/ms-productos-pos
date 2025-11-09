@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.formacionbdi.springboot.app.productos.models.entity.Auditoria;
 import com.formacionbdi.springboot.app.productos.models.entity.CostosPos;
 import com.formacionbdi.springboot.app.productos.models.entity.DetalleVentaPos;
 import com.formacionbdi.springboot.app.productos.models.dto.EstadVentasDTO;
 import com.formacionbdi.springboot.app.productos.models.entity.ImagenCliente;
 import com.formacionbdi.springboot.app.productos.models.entity.ProductoPos;
 import com.formacionbdi.springboot.app.productos.models.entity.VentaPos;
+import com.formacionbdi.springboot.app.productos.models.service.IAuditoriaService;
 import com.formacionbdi.springboot.app.productos.models.service.ICostosServicePos;
 import com.formacionbdi.springboot.app.productos.models.service.IDetalleVentaServicePos;
 import com.formacionbdi.springboot.app.productos.models.service.IEstadisticaVentaMes;
@@ -49,6 +51,9 @@ public class ProductoController {
 	
 	@Autowired
 	private IImagenClientes imagenClienteService;
+	
+	@Autowired
+	private IAuditoriaService auditoriaService;
 
 	@GetMapping("/api/productos/listar-productos")
 	public ResponseEntity<List<ProductoPos>> listarProductos(){
@@ -236,6 +241,41 @@ public class ProductoController {
 						imagenCliente.getImagen(),
 						imagenCliente.getRutaimagen()));
 					 
+	}
+	
+	@PostMapping("/api/productos/eliminar-venta/{idcorrelativo}")
+	public ResponseEntity<Object> eliminarVenta(@PathVariable Long idcorrelativo){
+		System.out.println("/eliminar-venta/" + idcorrelativo);
+		try {
+			ventaServicePos.eliminarVentaPos(idcorrelativo);
+			return ResponseEntity.ok().body("{\"mensaje\": \"Venta eliminada correctamente\", \"idcorrelativo\": " + idcorrelativo + "}");
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("{\"error\": \"Error al eliminar la venta\", \"mensaje\": \"" + e.getMessage() + "\"}");
+		}
+	}
+	
+	@PostMapping("/api/productos/registrar-auditoria")
+	public ResponseEntity<Object> registrarAuditoria(@RequestBody Auditoria auditoria){
+		System.out.println("/registrar-auditoria - Módulo: " + auditoria.getModulo() + 
+						   " - Ubicación: " + auditoria.getCiudad() + ", " + auditoria.getPais());
+		try {
+			auditoriaService.insertarAuditoria(
+				auditoria.getHostorigen(),
+				auditoria.getModulo(),
+				auditoria.getAccionrealizada(),
+				auditoria.getUsuario(),
+				auditoria.getDetalles(),
+				auditoria.getLatitud(),
+				auditoria.getLongitud(),
+				auditoria.getCiudad(),
+				auditoria.getRegion(),
+				auditoria.getPais(),
+				auditoria.getDataprocesada()
+			);
+			return ResponseEntity.ok().body("{\"mensaje\": \"Auditoría registrada correctamente con ubicación geográfica\"}");
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("{\"error\": \"Error al registrar auditoría\", \"mensaje\": \"" + e.getMessage() + "\"}");
+		}
 	}
 	   
 	

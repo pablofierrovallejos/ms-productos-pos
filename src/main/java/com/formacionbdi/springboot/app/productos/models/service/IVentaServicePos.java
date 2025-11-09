@@ -49,5 +49,10 @@ public interface IVentaServicePos extends JpaRepository<VentaPos, String>{
 			  String trazastattransbk, 
 			  String longmsgtransbank
 			);
+	
+	@Modifying
+	@Query(value="{ call sp_eliminarVenta(:idcorrelativo) }", nativeQuery = true)
+	@Transactional
+	public Object eliminarVentaPos(Long idcorrelativo);
 
 }
