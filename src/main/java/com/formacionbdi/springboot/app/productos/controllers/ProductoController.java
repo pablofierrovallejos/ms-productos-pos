@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.formacionbdi.springboot.app.productos.models.entity.AbonoTransbank;
 import com.formacionbdi.springboot.app.productos.models.entity.Auditoria;
 import com.formacionbdi.springboot.app.productos.models.entity.CostosPos;
 import com.formacionbdi.springboot.app.productos.models.entity.DetalleVentaPos;
@@ -21,6 +22,7 @@ import com.formacionbdi.springboot.app.productos.models.dto.EstadVentasDTO;
 import com.formacionbdi.springboot.app.productos.models.entity.ImagenCliente;
 import com.formacionbdi.springboot.app.productos.models.entity.ProductoPos;
 import com.formacionbdi.springboot.app.productos.models.entity.VentaPos;
+import com.formacionbdi.springboot.app.productos.models.service.IAbonoTransbankService;
 import com.formacionbdi.springboot.app.productos.models.service.IAuditoriaService;
 import com.formacionbdi.springboot.app.productos.models.service.ICostosServicePos;
 import com.formacionbdi.springboot.app.productos.models.service.IDetalleVentaServicePos;
@@ -54,6 +56,9 @@ public class ProductoController {
 	
 	@Autowired
 	private IAuditoriaService auditoriaService;
+	
+	@Autowired
+	private IAbonoTransbankService abonoTransbankService;
 
 	@GetMapping("/api/productos/listar-productos")
 	public ResponseEntity<List<ProductoPos>> listarProductos(){
@@ -275,6 +280,18 @@ public class ProductoController {
 			return ResponseEntity.ok().body("{\"mensaje\": \"Auditoría registrada correctamente con ubicación geográfica\"}");
 		} catch (Exception e) {
 			return ResponseEntity.status(500).body("{\"error\": \"Error al registrar auditoría\", \"mensaje\": \"" + e.getMessage() + "\"}");
+		}
+	}
+	
+	@GetMapping("/api/abonos/transbank/{mes}")
+	public ResponseEntity<List<AbonoTransbank>> consultarAbonosTransbank(@PathVariable String mes){
+		System.out.println("/api/abonos/transbank/" + mes);
+		try {
+			List<AbonoTransbank> abonos = abonoTransbankService.consultarAbonosPorMes(mes);
+			return ResponseEntity.ok(abonos);
+		} catch (Exception e) {
+			System.err.println("Error al consultar abonos: " + e.getMessage());
+			return ResponseEntity.status(500).build();
 		}
 	}
 	   

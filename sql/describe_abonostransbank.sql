@@ -1,0 +1,11 @@
+-- Script para verificar estructura de la tabla abonostransbank
+-- DESCRIBE abonostransbank;
+-- SELECT * FROM abonostransbank LIMIT 5;
+
+-- Ejemplo de estructura esperada (ajustar según tu tabla real):
+-- CREATE TABLE abonostransbank (
+--   id INT PRIMARY KEY AUTO_INCREMENT,
+--   fecha DATE,
+--   monto DECIMAL(10,2),
+--   ... otros campos
+-- );
