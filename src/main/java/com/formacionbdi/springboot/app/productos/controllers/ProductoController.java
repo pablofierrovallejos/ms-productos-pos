@@ -20,6 +20,7 @@ import com.formacionbdi.springboot.app.productos.models.entity.CostosPos;
 import com.formacionbdi.springboot.app.productos.models.entity.DetalleVentaPos;
 import com.formacionbdi.springboot.app.productos.models.dto.EstadVentasDTO;
 import com.formacionbdi.springboot.app.productos.models.entity.ImagenCliente;
+import com.formacionbdi.springboot.app.productos.models.entity.ProductoDisponible;
 import com.formacionbdi.springboot.app.productos.models.entity.ProductoPos;
 import com.formacionbdi.springboot.app.productos.models.entity.VentaPos;
 import com.formacionbdi.springboot.app.productos.models.service.IAbonoTransbankService;
@@ -28,6 +29,7 @@ import com.formacionbdi.springboot.app.productos.models.service.ICostosServicePo
 import com.formacionbdi.springboot.app.productos.models.service.IDetalleVentaServicePos;
 import com.formacionbdi.springboot.app.productos.models.service.IEstadisticaVentaMes;
 import com.formacionbdi.springboot.app.productos.models.service.IImagenClientes;
+import com.formacionbdi.springboot.app.productos.models.service.IProductoDisponibleService;
 import com.formacionbdi.springboot.app.productos.models.service.IProductoServicePos;
 import com.formacionbdi.springboot.app.productos.models.service.IVentaServicePos;
 
@@ -37,6 +39,9 @@ public class ProductoController {
 	
 	@Autowired
 	private IProductoServicePos productoServicePos;
+	
+	@Autowired
+	private IProductoDisponibleService productoDisponibleService;
 	
 	@Autowired
 	private IVentaServicePos ventaServicePos;
@@ -64,6 +69,12 @@ public class ProductoController {
 	public ResponseEntity<List<ProductoPos>> listarProductos(){
 		System.out.println("/listarProductos");
 		return ResponseEntity.ok(productoServicePos.findAllProductsPos());
+	}
+	
+	@GetMapping("/api/productos/productos-disponibles")
+	public ResponseEntity<List<ProductoDisponible>> listarProductosDisponibles(){
+		System.out.println("/productos-disponibles");
+		return ResponseEntity.ok(productoDisponibleService.findAllProductosDisponibles());
 	}
 	
 	@GetMapping("/api/productos/consultar-producto/{idProd}")
