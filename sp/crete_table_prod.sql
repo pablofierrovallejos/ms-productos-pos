@@ -100,3 +100,12 @@ GROUP BY categoria;
 -- Mostrar datos insertados
 SELECT 'Productos creados exitosamente:' as mensaje;
 SELECT codigo, nombre, precio, stock, fila, posicion, relay FROM producto_vending ORDER BY fila, posicion;
+
+-- Modificar el campo imagen para soportar imágenes en base64
+-- Una imagen de 40 KB en base64 requiere aproximadamente 54 KB de almacenamiento
+-- MEDIUMTEXT soporta hasta 16 MB, ideal para imágenes de productos
+-- Equivalente a CLOB en otros SGBD (Oracle, SQL Server)
+ALTER TABLE producto_vending 
+MODIFY COLUMN imagen MEDIUMTEXT COMMENT 'Imagen del producto codificada en base64 o emoji';
+
+-- 

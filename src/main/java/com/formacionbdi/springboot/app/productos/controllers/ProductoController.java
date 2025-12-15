@@ -22,6 +22,7 @@ import com.formacionbdi.springboot.app.productos.models.dto.EstadVentasDTO;
 import com.formacionbdi.springboot.app.productos.models.entity.ImagenCliente;
 import com.formacionbdi.springboot.app.productos.models.entity.ProductoDisponible;
 import com.formacionbdi.springboot.app.productos.models.entity.ProductoPos;
+import com.formacionbdi.springboot.app.productos.models.entity.ProductoVending;
 import com.formacionbdi.springboot.app.productos.models.entity.VentaPos;
 import com.formacionbdi.springboot.app.productos.models.service.IAbonoTransbankService;
 import com.formacionbdi.springboot.app.productos.models.service.IAuditoriaService;
@@ -31,6 +32,7 @@ import com.formacionbdi.springboot.app.productos.models.service.IEstadisticaVent
 import com.formacionbdi.springboot.app.productos.models.service.IImagenClientes;
 import com.formacionbdi.springboot.app.productos.models.service.IProductoDisponibleService;
 import com.formacionbdi.springboot.app.productos.models.service.IProductoServicePos;
+import com.formacionbdi.springboot.app.productos.models.service.IProductoVendingService;
 import com.formacionbdi.springboot.app.productos.models.service.IVentaServicePos;
 
 @CrossOrigin
@@ -64,6 +66,9 @@ public class ProductoController {
 	
 	@Autowired
 	private IAbonoTransbankService abonoTransbankService;
+	
+	@Autowired
+	private IProductoVendingService productoVendingService;
 
 	@GetMapping("/api/productos/listar-productos")
 	public ResponseEntity<List<ProductoPos>> listarProductos(){
@@ -303,6 +308,169 @@ public class ProductoController {
 		} catch (Exception e) {
 			System.err.println("Error al consultar abonos: " + e.getMessage());
 			return ResponseEntity.status(500).build();
+		}
+	}
+	
+	// ============================================
+	// ENDPOINTS PARA PRODUCTOS VENDING
+	// ============================================
+	
+	/**
+	 * Listar todos los productos vending
+	 */
+	@GetMapping("/api/productos/vending/listar")
+	public ResponseEntity<List<ProductoVending>> listarProductosVending() {
+		System.out.println("/api/productos/vending/listar");
+		try {
+			List<ProductoVending> productos = productoVendingService.findAll();
+			return ResponseEntity.ok(productos);
+		} catch (Exception e) {
+			System.err.println("Error al listar productos vending: " + e.getMessage());
+			return ResponseEntity.status(500).build();
+		}
+	}
+	
+	/**
+	 * Listar productos vending habilitados
+	 */
+	@GetMapping("/api/productos/vending/habilitados")
+	public ResponseEntity<List<ProductoVending>> listarProductosVendingHabilitados() {
+		System.out.println("/api/productos/vending/habilitados");
+		try {
+			List<ProductoVending> productos = productoVendingService.findByHabilitadoTrue();
+			return ResponseEntity.ok(productos);
+		} catch (Exception e) {
+			System.err.println("Error al listar productos vending habilitados: " + e.getMessage());
+			return ResponseEntity.status(500).build();
+		}
+	}
+	
+	/**
+	 * Consultar producto vending por ID
+	 */
+	@GetMapping("/api/productos/vending/{id}")
+	public ResponseEntity<?> consultarProductoVending(@PathVariable Long id) {
+		System.out.println("/api/productos/vending/" + id);
+		try {
+			return productoVendingService.findById(id)
+				.map(ResponseEntity::ok)
+				.orElse(ResponseEntity.status(404)
+					.body(null));
+		} catch (Exception e) {
+			System.err.println("Error al consultar producto vending: " + e.getMessage());
+			return ResponseEntity.status(500).build();
+		}
+	}
+	
+	/**
+	 * Actualizar imagen de producto vending por ID
+	 * Soporta emojis y imágenes codificadas en base64 (MEDIUMTEXT/CLOB hasta 16 MB)
+	 * @param id ID del producto
+	 * @param request JSON con el campo "imagen"
+	 */
+	@PostMapping("/api/productos/vending/{id}/imagen")
+	public ResponseEntity<?> actualizarImagenProductoVending(
+			@PathVariable Long id, 
+			@RequestBody java.util.Map<String, String> request) {
+		System.out.println("/api/productos/vending/" + id + "/imagen");
+		try {
+			// Verificar que el producto existe
+			if (!productoVendingService.existsById(id)) {
+				return ResponseEntity.status(404)
+					.body("{\"error\": \"Producto no encontrado\", \"id\": " + id + "}");
+			}
+			
+			// Obtener la imagen del request
+			String nuevaImagen = request.get("imagen");
+			if (nuevaImagen == null || nuevaImagen.trim().isEmpty()) {
+				return ResponseEntity.status(400)
+					.body("{\"error\": \"El campo 'imagen' es requerido\"}");
+			}
+			
+			// Validar tamaño (16 MB = 16777215 caracteres para MEDIUMTEXT)
+			if (nuevaImagen.length() > 16777215) {
+				return ResponseEntity.status(413) // Payload Too Large
+					.body("{\"error\": \"Imagen demasiado grande\", \"tamaño_actual\": " + nuevaImagen.length() + ", \"maximo\": 16777215}");
+			}
+			
+			// Logging del tamaño de la imagen
+			double sizeKB = nuevaImagen.length() / 1024.0;
+			double sizeMB = sizeKB / 1024.0;
+			String tipoImagen = nuevaImagen.startsWith("data:image") ? "Base64" : "Emoji/Texto";
+			System.out.println(String.format("Actualizando imagen del producto %d - Tipo: %s, Tamaño: %.2f KB (%.2f MB)", 
+				id, tipoImagen, sizeKB, sizeMB));
+			int filasActualizadas = productoVendingService.updateImagenById(id, nuevaImagen);
+			
+			if (filasActualizadas > 0) {
+				// Obtener el producto actualizado
+				ProductoVending productoActualizado = productoVendingService.findById(id).orElse(null);
+				return ResponseEntity.ok(productoActualizado);
+			} else {
+				return ResponseEntity.status(500)
+					.body("{\"error\": \"No se pudo actualizar la imagen\"}");
+			}
+		} catch (Exception e) {
+			System.err.println("Error al actualizar imagen: " + e.getMessage());
+			return ResponseEntity.status(500)
+				.body("{\"error\": \"Error al actualizar la imagen\", \"mensaje\": \"" + e.getMessage() + "\"}");
+		}
+	}
+	
+	/**
+	 * Crear nuevo producto vending
+	 */
+	@PostMapping("/api/productos/vending/crear")
+	public ResponseEntity<?> crearProductoVending(@RequestBody ProductoVending producto) {
+		System.out.println("/api/productos/vending/crear");
+		try {
+			ProductoVending nuevoProducto = productoVendingService.save(producto);
+			return ResponseEntity.status(201).body(nuevoProducto);
+		} catch (Exception e) {
+			System.err.println("Error al crear producto vending: " + e.getMessage());
+			return ResponseEntity.status(500)
+				.body("{\"error\": \"Error al crear el producto\", \"mensaje\": \"" + e.getMessage() + "\"}");
+		}
+	}
+	
+	/**
+	 * Actualizar producto vending SIN modificar la imagen
+	 * Para actualizar la imagen usar: POST /api/productos/vending/{id}/imagen
+	 */
+	@PostMapping("/api/productos/vending/{id}/actualizar")
+	public ResponseEntity<?> actualizarProductoVending(
+			@PathVariable Long id, 
+			@RequestBody ProductoVending producto) {
+		System.out.println("/api/productos/vending/" + id + "/actualizar");
+		try {
+			if (!productoVendingService.existsById(id)) {
+				return ResponseEntity.status(404)
+					.body("{\"error\": \"Producto no encontrado\", \"id\": " + id + "}");
+			}
+			
+			// Obtener el producto existente para preservar la imagen
+			ProductoVending productoExistente = productoVendingService.findById(id).orElse(null);
+			if (productoExistente == null) {
+				return ResponseEntity.status(404)
+					.body("{\"error\": \"Producto no encontrado\", \"id\": " + id + "}");
+			}
+			
+			// Preservar la imagen existente (no se actualiza por este endpoint)
+			String imagenOriginal = productoExistente.getImagen();
+			
+			// Actualizar el producto
+			producto.setId(id);
+			producto.setImagen(imagenOriginal); // Mantener imagen original
+			
+			ProductoVending productoActualizado = productoVendingService.save(producto);
+			
+			System.out.println(String.format("Producto %d actualizado (imagen preservada: %s)", 
+				id, imagenOriginal != null && imagenOriginal.length() > 50 ? "Base64" : "Emoji"));
+			
+			return ResponseEntity.ok(productoActualizado);
+		} catch (Exception e) {
+			System.err.println("Error al actualizar producto vending: " + e.getMessage());
+			return ResponseEntity.status(500)
+				.body("{\"error\": \"Error al actualizar el producto\", \"mensaje\": \"" + e.getMessage() + "\"}");
 		}
 	}
 	   
